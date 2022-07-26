@@ -64,6 +64,7 @@ function tweenScratch(metaWindow, targetX, targetY, tweenParams = {}) {
 }
 
 function makeScratch(metaWindow) {
+  if (!metaWindow) return;
   let fromNonScratch = !metaWindow[float];
   let fromTiling = false;
   // Relevant when called while navigating. Use the position the user actually sees.
@@ -73,7 +74,10 @@ function makeScratch(metaWindow) {
     // Figure out some stuff before the window is removed from the tiling
     let space = Tiling.spaces.spaceOfWindow(metaWindow);
     fromTiling = space.indexOf(metaWindow) > -1;
-    windowPositionSeen = metaWindow.clone
+    let clone = metaWindow.clone;
+    // get_transformed_position() will crash for unmapped actors
+    if (!clone || !clone.mapped) return;
+    windowPositionSeen = clone
       .get_transformed_position()
       .map(Math.round);
   }
